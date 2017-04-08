@@ -63,7 +63,7 @@ public class ChatToolBar extends RelativeLayout {
 
     public void seeFriendInfo(Activity activity, String phonenumber) {
         intent = new Intent(activity, UserMesgActivity.class);
-        intent.putExtra(UserMesgActivity.USER, phonenumber);
+        intent.putExtra(UserMesgActivity.PHONE_NUMBER, phonenumber);
 
     }
 }

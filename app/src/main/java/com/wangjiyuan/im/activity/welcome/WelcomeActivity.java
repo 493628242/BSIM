@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.wangjiyuan.im.base.BaseActivity;
 import com.wangjiyuan.im.base.BaseApplication;
 import com.wangjiyuan.im.bean.User;
-import com.wangjiyuan.im.config.SharedConfig;
+import com.wangjiyuan.im.config.ConfigString;
 import com.wangjiyuan.im.activity.login.LoginActivity;
 import com.wangjiyuan.im.activity.main.MainActivity;
 import com.wangjiyuan.im.utils.HttpUtils;
@@ -17,6 +17,11 @@ import java.io.IOException;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * 欢迎页面的作用：
+ * <p>
+ * 判断是否该已经有过登录账户，是则直接进行登录，否则及跳转到登录界面
+ */
 public class WelcomeActivity extends BaseActivity {
 
     @Override
@@ -31,8 +36,8 @@ public class WelcomeActivity extends BaseActivity {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            String token = SharedPreferenceUtil.getString(mContext, SharedConfig.TOKEN, null);
-            String phonenumber = SharedPreferenceUtil.getString(mContext, SharedConfig.PHONE_NUBER, null);
+            String token = SharedPreferenceUtil.getString(mContext, ConfigString.TOKEN, null);
+            String phonenumber = SharedPreferenceUtil.getString(mContext, ConfigString.PHONE_NUBER, null);
             if (token != null && phonenumber != null) { //发送token给服务器
                 Call<User> verify = HttpUtils.getInstance().getHttpInterfaces().Verify(phonenumber, token);
                 try {
@@ -41,8 +46,8 @@ public class WelcomeActivity extends BaseActivity {
                     if (user.getToken().equals("000000")) {
                         return 0;
                     }
-                    SharedPreferenceUtil.putString(mContext, SharedConfig.PHONE_NUBER, this.user.getPhonenumber());
-                    SharedPreferenceUtil.putString(mContext, SharedConfig.TOKEN, this.user.getToken());
+                    SharedPreferenceUtil.putString(mContext, ConfigString.PHONE_NUBER, this.user.getPhonenumber());
+                    SharedPreferenceUtil.putString(mContext, ConfigString.TOKEN, this.user.getToken());
                     BaseApplication.setUser(user);
                 } catch (IOException e) {
                     e.printStackTrace();

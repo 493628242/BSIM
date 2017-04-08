@@ -3,6 +3,8 @@ package com.wangjiyuan.im.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by wjy on 2017/2/22.
  */
@@ -10,16 +12,20 @@ import android.os.Parcelable;
 public class Message implements Parcelable {
 
 
+    @SerializedName("content")
     private String content;
+    @SerializedName("time")
     private Long time;
-    private String formnickname;
-    private String tonickname;
-    private String form;
-    private String to;
-    private int type;//类型 1为文本，0为图片
+    @SerializedName("form")
+    private Friend form;
+    @SerializedName("to")
+    private Friend to;
+    @SerializedName("type")
+    private int type;//类型 1为文本，0为图片,2验证消息
 
     public static final int TEXT = 1;
     public static final int IMAGE = 0;
+    public static final int CODE = 2;
 
     public Message() {
 
@@ -27,27 +33,9 @@ public class Message implements Parcelable {
 
     protected Message(Parcel in) {
         content = in.readString();
-        form = in.readString();
-        to = in.readString();
+        form = in.readParcelable(Friend.class.getClassLoader());
+        to = in.readParcelable(Friend.class.getClassLoader());
         type = in.readInt();
-        formnickname = in.readString();
-        tonickname = in.readString();
-    }
-
-    public String getFormnickname() {
-        return formnickname;
-    }
-
-    public void setFormnickname(String formnickname) {
-        this.formnickname = formnickname;
-    }
-
-    public String getTonickname() {
-        return tonickname;
-    }
-
-    public void setTonickname(String tonickname) {
-        this.tonickname = tonickname;
     }
 
     public static final Creator<Message> CREATOR = new Creator<Message>() {
@@ -71,11 +59,11 @@ public class Message implements Parcelable {
     }
 
 
-    public String getForm() {
+    public Friend getForm() {
         return form;
     }
 
-    public void setForm(String form) {
+    public void setForm(Friend form) {
         this.form = form;
     }
 
@@ -87,11 +75,11 @@ public class Message implements Parcelable {
         this.time = time;
     }
 
-    public String getTo() {
+    public Friend getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(Friend to) {
         this.to = to;
     }
 
@@ -103,6 +91,7 @@ public class Message implements Parcelable {
         this.type = type;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -111,22 +100,19 @@ public class Message implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(content);
-        dest.writeString(form);
-        dest.writeString(to);
+        dest.writeParcelable(form, flags);
+        dest.writeParcelable(to, flags);
         dest.writeInt(type);
-        dest.writeString(formnickname);
-        dest.writeString(tonickname);
     }
+
 
     @Override
     public String toString() {
         return "Message{" +
                 "content='" + content + '\'' +
                 ", time=" + time +
-                ", form='" + form + '\'' +
-                ", to='" + to + '\'' +
-                ", tonickname='" + tonickname + '\'' +
-                ", formnickname='" + formnickname + '\'' +
+                ", form=" + form +
+                ", to=" + to +
                 ", type=" + type +
                 '}';
     }

@@ -2,6 +2,7 @@ package com.wangjiyuan.im.fragment.message;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -61,22 +62,27 @@ public class MesgFragment extends BaseFragment implements ChatMessageHandler.onR
     }
 
     @Override
-    public void onReceiveMessageListener(ArrayList<Message> messages) {
+    public void onReceiveMessage(ArrayList<Message> messages) {
         for (FriendWithMesg fwm :
                 mesgList) {
             for (Message m : messages) {
-                if (fwm.getPhonenumber().equals(m.getForm())) {
+                if (fwm.getPhonenumber().equals(m.getForm().toString())) {
                     mesgList.remove(fwm);
-                    FriendWithMesg f = new FriendWithMesg();
-                    f.setHeadimage(UrlConfig.BASE_URL + UrlConfig.HEAD_IMAGE + m.getForm() + ".jpg");
-                    f.setNickname(m.getFormnickname());
-                    f.setLastChatMesg(m.getType() == 1 ? m.getContent() : "[图片]");
-                    f.setTime(m.getTime());
-                    mesgList.add(f);
+                    mesgList.add(changeMessageToFriendWithMesg(m));
                 }
             }
         }
 
         adapter.notifyDataSetChanged();
+    }
+
+    @NonNull
+    private FriendWithMesg changeMessageToFriendWithMesg(Message m) {
+        FriendWithMesg f = new FriendWithMesg();
+        f.setHeadimage(UrlConfig.BASE_URL + UrlConfig.HEAD_IMAGE + m.getForm() + ".jpg");
+        f.setNickname(m.getForm().getNickname());
+        f.setLastChatMesg(m.getType() == 1 ? m.getContent() : "[图片]");
+        f.setTime(m.getTime());
+        return f;
     }
 }

@@ -104,4 +104,13 @@ public class User extends BaseUser implements Parcelable {
         dest.writeString(headimage);
         dest.writeString(token);
     }
+
+    public Friend changToFriend() {
+        Friend friend = new Friend();
+        friend.setHeadimage(headimage);
+        friend.setNickname(nickname);
+        friend.setPhonenumber(phonenumber);
+        friend.setSex(sex);
+        return friend;
+    }
 }

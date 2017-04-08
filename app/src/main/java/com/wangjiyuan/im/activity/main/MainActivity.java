@@ -122,7 +122,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putString(UserMesgActivity.USER, BaseApplication.getUser().getPhonenumber());
+                bundle.putString(UserMesgActivity.PHONE_NUMBER, BaseApplication.getUser().getPhonenumber());
                 openActivity(UserMesgActivity.class, bundle);
                 drawer.closeDrawer(GravityCompat.START);
             }
@@ -180,7 +180,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onReceiveMessageListener(ArrayList<Message> Message) {
-        mesgFragment.onReceiveMessageListener(Message);
+    public void onReceiveMessage(ArrayList<Message> Message) {
+        mesgFragment.onReceiveMessage(Message);
     }
 }

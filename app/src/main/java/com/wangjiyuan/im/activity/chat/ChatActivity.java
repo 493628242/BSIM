@@ -98,10 +98,8 @@ public class ChatActivity extends BaseActivity implements ChatMessageHandler.onR
             case R.id.send_message:  //文本发送
                 Message message = new Message();
                 message.setContent(editText.getText().toString());
-                message.setForm(BaseApplication.getUser().getPhonenumber());
-                message.setTonickname(BaseApplication.getUser().getNickname());
-                message.setTo(friend.getPhonenumber());
-                message.setFormnickname(friend.getNickname());
+                message.setForm(BaseApplication.getUser().changToFriend());
+                message.setTo(friend);
                 message.setType(Message.TEXT);
                 message.setTime(System.currentTimeMillis());
                 messages.add(message);
@@ -122,10 +120,10 @@ public class ChatActivity extends BaseActivity implements ChatMessageHandler.onR
     }
 
     @Override
-    public void onReceiveMessageListener(ArrayList<Message> messages) {
+    public void onReceiveMessage(ArrayList<Message> messages) {
         for (Message message :
                 messages) {
-            if (message.getForm().equals(friend.getPhonenumber())) {
+            if (message.getForm().getPhonenumber().equals(friend.getPhonenumber())) {
                 this.messages.add(message);
             }
         }

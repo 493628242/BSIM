@@ -21,8 +21,8 @@ import butterknife.OnClick;
 /**
  *
  */
-public class UserMesgActivity extends BaseActivity {
-    public static final String USER = "user";
+public class UserMesgActivity extends BaseActivity implements IUserMesgContract.IUserMesgView {
+    public static final String PHONE_NUMBER = "phonenumber";
     @BindView(R.id.back_btn)
     ImageView backBtn;
     @BindView(R.id.head_image)
@@ -37,7 +37,6 @@ public class UserMesgActivity extends BaseActivity {
     Button sendMessage;
     @BindView(R.id.remove_friend)
     Button removeFriend;
-    private User user;
     private Friend friend;
 
 
@@ -47,34 +46,26 @@ public class UserMesgActivity extends BaseActivity {
         setContentView(R.layout.activity_user_mesg);
         ButterKnife.bind(this);
         initData();
-        initView();
     }
 
     private void initData() {
         Bundle bundle = getIntent().getExtras();
-        Object o = bundle.get(USER);
-        if (o instanceof User) {
-            user = (User) o;
-        } else if (o instanceof Friend) {
-            friend = (Friend) o;
-        }
+        bundle.getString(PHONE_NUMBER);
     }
 
-    private void initView() {
-        if (user != null) {
-            sendMessage.setVisibility(View.INVISIBLE);
-            removeFriend.setVisibility(View.INVISIBLE);
-            Log.e("aa",user.toString());
-            GlideUtils.loadCircleImage(this, user.getHeadimage(), headImage, R.mipmap.ic_launcher);
-            sex.setText(user.getSex() == 1 ? "男" : "女");
-            nickName.setText(user.getNickname());
-            phoneNumber.setText(user.getPhonenumber());
-        } else if (friend != null) {
-            GlideUtils.loadCircleImage(this, friend.getHeadimage(), headImage, R.mipmap.ic_launcher);
-            sex.setText(friend.getSex() == 1 ? "男" : "女");
-            nickName.setText(friend.getNickname());
-            phoneNumber.setText(friend.getPhonenumber());
-        }
+
+    @Override
+    public void LoginSuccess(Friend friend) {
+        GlideUtils.loadCircleImage(this, friend.getHeadimage(), headImage, R.mipmap.ic_launcher);
+        sex.setText(friend.getSex() == 1 ? "男" : "女");
+        nickName.setText(friend.getNickname());
+        phoneNumber.setText(friend.getPhonenumber());
+        showToast("获取信息成功");
+    }
+
+    @Override
+    public void LoginFailure() {
+        showToast("获取信息失败");
     }
 
     @OnClick({R.id.back_btn, R.id.send_message, R.id.remove_friend})

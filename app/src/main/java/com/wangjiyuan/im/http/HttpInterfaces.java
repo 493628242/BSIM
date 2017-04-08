@@ -1,7 +1,8 @@
 package com.wangjiyuan.im.http;
 
+import com.wangjiyuan.im.bean.Friend;
 import com.wangjiyuan.im.bean.User;
-import com.wangjiyuan.im.config.SharedConfig;
+import com.wangjiyuan.im.config.ConfigString;
 import com.wangjiyuan.im.config.UrlConfig;
 
 import retrofit2.Call;
@@ -23,13 +24,17 @@ public interface HttpInterfaces {
      */
     @FormUrlEncoded
     @POST(UrlConfig.LOGIN)
-    Observable<User> Login(@Field(SharedConfig.PHONE_NUBER) String phonenumber,
-                           @Field(SharedConfig.PASSWORD) String password);
+    Observable<User> Login(@Field(ConfigString.PHONE_NUBER) String phonenumber,
+                           @Field(ConfigString.PASSWORD) String password);
 
     @FormUrlEncoded
     @POST(UrlConfig.VERIFY)
-    Call<User> Verify(@Field(SharedConfig.PHONE_NUBER) String phonenumber,
-                      @Field(SharedConfig.TOKEN) String token);
+    Call<User> Verify(@Field(ConfigString.PHONE_NUBER) String phonenumber,
+                      @Field(ConfigString.TOKEN) String token);
+
+    @FormUrlEncoded
+    @POST(UrlConfig.USER_MESG)
+    Observable<Friend> UserMesg(@Field(ConfigString.PHONE_NUBER) String phonenumber);
 
 
 }

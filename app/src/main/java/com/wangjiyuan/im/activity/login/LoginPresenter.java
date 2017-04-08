@@ -1,16 +1,11 @@
 package com.wangjiyuan.im.activity.login;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.wangjiyuan.im.bean.User;
-import com.wangjiyuan.im.config.SharedConfig;
-import com.wangjiyuan.im.http.HttpInterfaces;
-import com.wangjiyuan.im.utils.HttpUtils;
-import com.wangjiyuan.im.utils.SharedPreferenceUtil;
 
-import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -20,39 +15,38 @@ import rx.schedulers.Schedulers;
 
 public class LoginPresenter implements ILoginContract.ILoginPresenter {
     private ILoginContract.ILoginView v;
-    private ILoginContract.ILoginModle modle;
+    private ILoginContract.ILoginModel model;
+    private Subscription subscribe;
 
     public LoginPresenter(ILoginContract.ILoginView v) {
-        modle = new LoginModel();
+        model = new LoginModel();
         this.v = v;
     }
 
     @Override
-    public User getUserMessage(String phonenumber, String password) {
-        HttpUtils instance = HttpUtils.getInstance();
-        HttpInterfaces httpInterfaces = instance.getHttpInterfaces();
-        Observable<User> login = httpInterfaces.Login(phonenumber, password);
-        login.subscribeOn(Schedulers.io())
+    public void getUserMessage(String phonenumber, String password) {
+
+
+        subscribe = model.getUser(phonenumber, password).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<User>() {
                     @Override
                     public void onCompleted() {
-                        v.LoginSuccess();
+                        subscribe.unsubscribe();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.e("error", e.toString());
                         v.LoginFailure();
+                        subscribe.unsubscribe();
                     }
 
                     @Override
                     public void onNext(User user) {
-                        modle.getUserMessage(user);
-                        SharedPreferenceUtil.putString((Context) v, SharedConfig.PHONE_NUBER, user.getPhonenumber());
-                        SharedPreferenceUtil.putString((Context) v, SharedConfig.TOKEN, user.getToken());
+                        v.LoginSuccess(user);
+
                     }
                 });
-        return null;
     }
 }

@@ -16,7 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ChatService extends Service {
-    private Socket chatScoket;
+    private Socket chatSocket;
     public static final String HEART_BEAT_CODE = "200";
     private BufferedReader readMessage;
     private BufferedWriter writeMessage;
@@ -34,9 +34,9 @@ public class ChatService extends Service {
     public void onCreate() {
         super.onCreate();
         try {
-            chatScoket = new Socket(ID_ADDRESS, PORT);
-            readMessage = new BufferedReader(new InputStreamReader(chatScoket.getInputStream()));
-            writeMessage = new BufferedWriter(new OutputStreamWriter(chatScoket.getOutputStream()));
+            chatSocket = new Socket(ID_ADDRESS, PORT);
+            readMessage = new BufferedReader(new InputStreamReader(chatSocket.getInputStream()));
+            writeMessage = new BufferedWriter(new OutputStreamWriter(chatSocket.getOutputStream()));
             StartThread(readMessage, writeMessage);
         } catch (IOException e) {
             e.printStackTrace();
@@ -71,8 +71,18 @@ public class ChatService extends Service {
         return new ChatBinder();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            chatSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     class ChatBinder extends Binder {
-        public ChatService geteService() {
+        public ChatService getService() {
             return ChatService.this;
         }
     }

@@ -59,9 +59,10 @@ public class ChatMessageHandler extends Handler {
                 || !message.getForm().equals(chatActivitySoftReference.get().getFriend().getPhonenumber())) {
             showNotification();
         } else if (chatActivitySoftReference.get() != null) {
-            chatActivitySoftReference.get().onReceiveMessageListener(messages);
+            chatActivitySoftReference.get().onReceiveMessage(messages);
         }
         if (mainActivitySoftReference.get() != null) {
+            mainActivitySoftReference.get().onReceiveMessage(messages);
         }
 
 
@@ -76,8 +77,6 @@ public class ChatMessageHandler extends Handler {
     }
 
 
-
-
     /**
      * 显示通知
      */
@@ -86,13 +85,13 @@ public class ChatMessageHandler extends Handler {
         Notification.Builder builder = new Notification.Builder(context);
         Notification build = builder.setLargeIcon(icon)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(messageNumber == 1 ? message.getFormnickname() : "通知")
+                .setContentTitle(messageNumber == 1 ? message.getForm().getNickname() : "通知")
                 .setSubText(messageNumber == 0 ? (message.getType() == 1 ? message.getContent() : "[图片]") : "未读消息:" + messageNumber + "条")
                 .setWhen(message.getTime())
                 .setContentIntent(getPendIntent())
                 .build();
         build.flags |= Notification.FLAG_AUTO_CANCEL;
-        manager.notify(message.getForm(), 1, build);
+        manager.notify(message.getForm().getPhonenumber(), 1, build);
     }
 
     /**
@@ -104,11 +103,7 @@ public class ChatMessageHandler extends Handler {
         if (messageNumber == 1) {
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putParcelableArrayListExtra(MESSAGES, messages);
-            Friend friend = new Friend();
-            friend.setHeadimage(UrlConfig.BASE_URL + UrlConfig.HEAD_IMAGE + message.getForm() + ".jpg");
-            friend.setPhonenumber(message.getForm());
-            friend.setNickname(message.getFormnickname());
-            intent.putExtra(ChatActivity.FRIEND, friend);
+            intent.putExtra(ChatActivity.FRIEND, message.getForm());
             return PendingIntent.getActivity(context, 200, intent, PendingIntent.FLAG_ONE_SHOT);
         } else {
             Intent intent = new Intent(context, MainActivity.class);
@@ -118,6 +113,6 @@ public class ChatMessageHandler extends Handler {
     }
 
     public interface onReceiveMessageListener {
-        void onReceiveMessageListener(ArrayList<com.wangjiyuan.im.bean.Message> messages);
+        void onReceiveMessage(ArrayList<com.wangjiyuan.im.bean.Message> messages);
     }
 }

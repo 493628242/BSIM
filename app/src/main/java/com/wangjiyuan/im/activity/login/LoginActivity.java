@@ -8,6 +8,10 @@ import android.widget.TextView;
 import com.wangjiyuan.im.R;
 import com.wangjiyuan.im.base.BaseActivity;
 import com.wangjiyuan.im.activity.main.MainActivity;
+import com.wangjiyuan.im.base.BaseApplication;
+import com.wangjiyuan.im.bean.User;
+import com.wangjiyuan.im.config.ConfigString;
+import com.wangjiyuan.im.utils.SharedPreferenceUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,8 +75,11 @@ public class LoginActivity extends BaseActivity implements ILoginContract.ILogin
 
 
     @Override
-    public void LoginSuccess() {
+    public void LoginSuccess(User user) {
         //页面跳转
+        BaseApplication.setUser(user);
+        SharedPreferenceUtil.putString(this, ConfigString.PHONE_NUBER, user.getPhonenumber());
+        SharedPreferenceUtil.putString(this, ConfigString.TOKEN, user.getToken());
         wait = false;
         openActivityAndFinish(MainActivity.class);
     }

@@ -127,7 +127,7 @@ public class FriendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             //TODO 页面跳转
             MainActivity activity = (MainActivity) FriendAdapter.this.context;
             Bundle bundle = new Bundle();
-            bundle.putParcelable(UserMesgActivity.USER, (Friend)expandable.get(getAdapterPosition()));
+            bundle.putString(UserMesgActivity.PHONE_NUMBER, ((Friend)expandable.get(getAdapterPosition())).getPhonenumber());
             activity.openActivity(UserMesgActivity.class,bundle);
         }
     }
